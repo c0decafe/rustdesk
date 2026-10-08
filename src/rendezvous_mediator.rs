@@ -469,6 +469,9 @@ impl RendezvousMediator {
         }
         msg_out.set_relay_response(rr);
         socket.send(&msg_out).await?;
+        // Use client's relay-server config if set, overriding hbbs's relay address.
+        // Enables double-blind relay: each side can reach hbbr via different paths.
+        let relay_server = self.get_relay_server(relay_server);
         crate::create_relay_connection(
             server,
             relay_server,
